@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import { calculateWinner } from "./algorithm";
+import { clsx } from "./lib";
 
 interface SquareProps {
   value: string;
@@ -8,9 +9,15 @@ interface SquareProps {
 }
 
 const Square = (props: SquareProps) => {
+  const btnClassNames = ["square"];
+  const { value } = props;
+
+  if (value === "X") btnClassNames.push("square-x");
+  else if (value === "O") btnClassNames.push("square-o");
+
   return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
+    <button className={clsx(...btnClassNames)} onClick={props.onClick}>
+      {value}
     </button>
   );
 };
@@ -95,7 +102,7 @@ const Game = () => {
   const winner = calculateWinner(current.squares);
 
   const moves = gameState.history.map((_, move) => {
-    const desc = move ? "Go to move #" + move : "Go to game start";
+    const desc = move ? "回到轮次 #" + move : "回到游戏开始";
     return (
       <li key={move}>
         <button onClick={() => jumpTo(move)}>{desc}</button>
@@ -103,20 +110,30 @@ const Game = () => {
     );
   });
 
-  const status = winner
-    ? "Winner: " + winner
-    : "Next player: " + (gameState.xIsNext ? "X" : "O");
+  console.log(gameState);
+  let status = "";
+  const statusClassNames: string[] = [];
+  if (winner) {
+    status = "赢家: " + winner;
+    statusClassNames.push("winner-status");
+  } else if (gameState.stepNumber === 9) {
+    status = "平局";
+    statusClassNames.push("tie-status");
+  } else {
+    status = "当前手: " + (gameState.xIsNext ? "X" : "O");
+  }
 
   return (
     <div className="game">
+      <h3 className={clsx(...statusClassNames)}>{status}</h3>
       <div className="game-board">
         <Board
           squares={current.squares}
           onClick={(i: number) => handleClick(i)}
         />
       </div>
-      <div className="game-info">
-        <div>{status}</div>
+      <div>
+        <h3>游戏历史</h3>
         <ol>{moves}</ol>
       </div>
     </div>
