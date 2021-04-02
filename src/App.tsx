@@ -6,6 +6,7 @@ import { clsx } from "./lib";
 interface SquareProps {
   value: string;
   onClick: () => void;
+  idx: number;
 }
 
 const Square = (props: SquareProps) => {
@@ -16,7 +17,11 @@ const Square = (props: SquareProps) => {
   else if (value === "O") btnClassNames.push("square-o");
 
   return (
-    <button className={clsx(...btnClassNames)} onClick={props.onClick}>
+    <button
+      className={clsx(...btnClassNames, `btn-${props.idx}`)}
+      title={`btn-${props.idx}`}
+      onClick={props.onClick}
+    >
       {value}
     </button>
   );
@@ -30,7 +35,7 @@ interface BoardProps {
 const Board = (props: BoardProps) => {
   const { onClick, squares } = props;
   const renderSquare = (i: number) => {
-    return <Square value={squares[i]} onClick={() => onClick(i)} />;
+    return <Square idx={i} value={squares[i]} onClick={() => onClick(i)} />;
   };
 
   return (

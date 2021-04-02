@@ -2,8 +2,6 @@ const calculateWinner = (
   squares: (string | null)[],
   suppressLog: boolean = false
 ) => {
-  if (!suppressLog) console.log(squares);
-
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
